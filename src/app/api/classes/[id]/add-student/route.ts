@@ -1,18 +1,16 @@
-// ✅ Corrected dynamic route handler
-import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma"; // ✅ RIGHT
 
-const prisma = new PrismaClient();
 
-export async function POST(req: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params; // ✅ Destructure params correctly
+export async function POST(req: NextRequest) {
+  const url = new URL(req.url);
+  const id = url.pathname.split("/").slice(-2)[0]; // Extract the `id` from the URL
   const { studentId } = await req.json();
 
   if (!id || !studentId) {
     return NextResponse.json({ error: "Missing class ID or student ID" }, { status: 400 });
   }
 
-  // ✅ Check if student exists
   const studentExists = await prisma.user.findUnique({
     where: { id: studentId },
   });
@@ -21,7 +19,6 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
     return NextResponse.json({ error: "Student not found or invalid" }, { status: 404 });
   }
 
-  // ✅ Avoid duplicate entry
   const alreadyExists = await prisma.studentClass.findFirst({
     where: { classId: id, studentId },
   });
@@ -30,7 +27,6 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
     return NextResponse.json({ error: "Student already added to class" }, { status: 409 });
   }
 
-  // ✅ Add student to class
   const added = await prisma.studentClass.create({
     data: {
       classId: id,

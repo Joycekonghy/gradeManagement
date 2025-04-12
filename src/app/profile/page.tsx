@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image'; // ✅ This is the one you want!
+
 
 type User = {
   name: string;
@@ -84,12 +86,14 @@ export default function ProfilePage() {
       <h1 className="text-2xl font-bold">👤 Profile</h1>
 
       {user.image && (
-        <img
+        <Image
           src={user.image}
           alt="Profile"
+          width={96}
+          height={96}
           className="w-24 h-24 rounded-full object-cover border"
         />
-      )}
+        )}
 
       <div className="text-sm space-y-1">
         <p><strong>Name:</strong> {user.name}</p>
@@ -131,12 +135,15 @@ export default function ProfilePage() {
         <h2 className="text-lg font-semibold">🖼️ Update Profile Picture</h2>
 
         {user.image && (
-          <img
-            src={user.image}
-            alt="Profile"
-            className="w-24 h-24 rounded-full object-cover border "
-          />
-        )}
+        <Image
+          src={user.image}
+          alt="Profile"
+          width={96}
+          height={96}
+          className="w-24 h-24 rounded-full object-cover border"
+        />
+      )}
+
 
         <div>
           <label

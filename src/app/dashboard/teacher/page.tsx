@@ -108,11 +108,11 @@ export default function TeacherDashboard() {
 
   return (
     <div className="p-8 space-y-12">
-      <h1 className="text-3xl font-bold mb-6 text-white-800">📚 Teacher Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">📚 Teacher Dashboard</h1>
 
       {/* Assign New Task */}
       <div className="overflow-auto">
-        <h2 className="text-xl font-semibold mb-2 text-white-700">Assign New Tasks</h2>
+        <h2 className="text-xl font-semibold mb-2 text-gray-700">Assign New Tasks</h2>
         <table className="min-w-full border border-gray-300 rounded-md text-sm bg-white text-gray-900">
           <thead className="bg-gray-200 text-gray-800">
             <tr>
@@ -169,7 +169,7 @@ export default function TeacherDashboard() {
 
       {/* Assigned Tasks */}
       <div className="overflow-auto">
-        <h2 className="text-xl font-semibold mb-2 text-white-700">📋 Tasks You've Assigned</h2>
+        <h2 className="text-xl font-semibold mb-2 text-gray-700">📋 Tasks You&apos;ve Assigned</h2>
         <table className="min-w-full border border-gray-300 rounded-md text-sm bg-white text-gray-900">
           <thead className="bg-gray-200 text-gray-800">
             <tr>

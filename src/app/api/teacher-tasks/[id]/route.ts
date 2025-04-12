@@ -1,46 +1,44 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
+export async function PUT(req: NextRequest) {
+  const url = new URL(req.url);
+  const id = url.pathname.split("/").slice(-1)[0]; // still fine if needed
 
-// UPDATE a task
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const { title, description, dueDate } = await req.json();
-  const { id } = params;
-
-  if (!title || !description || !dueDate) {
-    return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+  if (!id) {
+    return NextResponse.json({ error: "Missing task ID" }, { status: 400 });
   }
 
   try {
+    const data = await req.json(); // Parse the request body
     const updatedTask = await prisma.task.update({
       where: { id },
-      data: {
-        title,
-        description,
-        dueDate: new Date(dueDate),
-      },
+      data,
     });
 
-    return NextResponse.json({ task: updatedTask });
+    return NextResponse.json({ success: true, updatedTask });
   } catch (error) {
-    console.error('❌ Update failed:', error);
-    return NextResponse.json({ error: 'Update failed' }, { status: 500 });
+    console.error("❌ Update failed:", error);
+    return NextResponse.json({ error: "Update failed" }, { status: 500 });
   }
 }
 
-// DELETE a task
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(req: NextRequest) {
+  const url = new URL(req.url);
+  const id = url.pathname.split("/").slice(-1)[0]; // Extract the `id` from the URL
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing task ID" }, { status: 400 });
+  }
 
   try {
     await prisma.task.delete({
       where: { id },
     });
 
-    return NextResponse.json({ message: 'Task deleted' });
+    return NextResponse.json({ message: "Task deleted" });
   } catch (error) {
-    console.error('❌ Delete failed:', error);
-    return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
+    console.error("❌ Delete failed:", error);
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
   }
 }
