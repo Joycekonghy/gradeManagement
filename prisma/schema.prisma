@@ -1,0 +1,72 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://app_user@localhost:5432/student_teacher_platform"
+}
+
+model Class {
+  id        String         @id @default(cuid())
+  name      String
+  teacher   User           @relation("ClassTeacher", fields: [teacherId], references: [id]) // ✅ Named relation
+  teacherId String
+  students  StudentClass[]
+  createdAt DateTime       @default(now())
+}
+
+model StudentClass {
+  id        String @id @default(cuid())
+  student   User   @relation(fields: [studentId], references: [id])
+  studentId String
+  class     Class  @relation(fields: [classId], references: [id])
+  classId   String
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  name          String
+  role          Role
+  tasksGiven    Task[]         @relation("TasksGiven")
+  tasksReceived Task[]         @relation("TasksReceived")
+  submissions   Submission[]
+  classes       StudentClass[]
+  classesLed    Class[]        @relation("ClassTeacher")
+  image         String?
+}
+
+model Task {
+  id           String       @id @default(cuid())
+  title        String
+  description  String
+  dueDate      DateTime
+  assignedBy   User         @relation("TasksGiven", fields: [assignedById], references: [id])
+  assignedById String
+  assignedTo   User         @relation("TasksReceived", fields: [assignedToId], references: [id])
+  assignedToId String
+  submissions  Submission[]
+  completed    Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+
+  @@unique([title, description, dueDate, assignedToId])
+}
+
+model Submission {
+  id        String @id @default(uuid())
+  student   User   @relation(fields: [studentId], references: [id])
+  studentId String
+  task      Task   @relation(fields: [taskId], references: [id])
+  taskId    String
+  content   String
+  score     Int?
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+}
