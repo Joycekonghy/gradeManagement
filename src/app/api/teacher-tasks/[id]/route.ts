@@ -19,7 +19,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ success: true, updatedTask });
   } catch (error) {
     console.error("❌ Update failed:", error);
-    return NextResponse.json({ error: "Update failed" }, { status: 500 });
+    return NextResponse.json({ error: "Updates failed" }, { status: 500 });
   }
 }
 
